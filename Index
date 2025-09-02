@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cocktail Manager - Тех. карты коктейлей</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #1a1a2e;
+            color: #e6e6e6;
+            line-height: 1.6;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 20px;
+        }
+        
+        header {
+            grid-column: 1 / -1;
+            background: linear-gradient(135deg, #16213e 0%, #0f3460 100%);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+            color: #e94560;
+        }
+        
+        .cocktail-form {
+            background: #16213e;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            height: fit-content;
+            position: sticky;
+            top: 20px;
+        }
+        
+        .cocktail-form h2 {
+            color: #e94560;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #0f3460;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+        
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #0f3460;
+            border-radius: 5px;
+            background: #1a1a2e;
+            color: #e6e6e6;
+        }
+        
+        .ingredients-list {
+            margin-top: 10px;
+        }
+        
+        .ingredient-item {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .ingredient-item input {
+            flex: 1;
+        }
+        
+        .btn {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background: #e94560;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #d8345f;
+        }
+        
+        .btn-secondary {
+            background: #0f3460;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: #16213e;
+        }
+        
+        .btn-danger {
+            background: #ff304f;
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background: #e62948;
+        }
+        
+        .cocktails-list {
+            background: #16213e;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .cocktails-list h2 {
+            color: #e94560;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #0f3460;
+        }
+        
+        .search-box {
+            margin-bottom: 20px;
+        }
+        
+        .search-box input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #0f3460;
+            border-radius: 5px;
+            background: #1a1a2e;
+            color: #e6e6e6;
+        }
+        
+        .cocktail-card {
+            background: #1a1a2e;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        .cocktail-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .cocktail-name {
+            font-size: 20px;
+            font-weight: bold;
+            color: #e94560;
+        }
+        
+        .cocktail-category {
+            background: #0f3460;
+            padding: 4px 8px;
+            border-radius: 20px;
+            font-size: 12px;
+        }
+        
+        .cocktail-glass {
+            margin: 5px 0;
+            font-style: italic;
+            color: #8a8a8a;
+        }
+        
+        .cocktail-ingredients {
+            margin: 10px 0;
+        }
+        
+        .ingredient {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+            padding-bottom: 5px;
+            border-bottom: 1px dashed #0f3460;
+        }
+        
+        .cocktail-recipe {
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px dashed #0f3460;
+        }
+        
+        .cocktail-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 40px 0;
+            color: #8a8a8a;
+        }
+        
+        .empty-state i {
+            font-size: 50px;
+            margin-bottom: 15px;
+            color: #0f3460;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+            
+            .cocktail-form {
+                position: static;
+                margin-bottom: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-cocktail"></i> Cocktail Manager
+            </div>
+            <div>
+                <button class="btn btn-secondary" id="exportBtn">
+                    <i class="fas fa-download"></i> Экспорт
+                </button>
+                <button class="btn btn-secondary" id="importBtn">
+                    <i class="fas fa-upload"></i> Импорт
+                </button>
+            </div>
+        </header>
+        
+        <div class="cocktail-form">
+            <h2 id="formTitle">Добавить новый коктейль</h2>
+            <form id="cocktailForm">
+                <input type="hidden" id="cocktailId">
+                
+                <div class="form-group">
+                    <label for="name">Название коктейля</label>
+                    <input type="text" id="name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="category">Категория</label>
+                    <select id="category" required>
+                        <option value="">Выберите категорию</option>
+                        <option value="Классические">Классические</option>
+                        <option value="Авторские">Авторские</option>
+                        <option value="Тропические">Тропические</option>
+                        <option value="Шоты">Шоты</option>
+                        <option value="Безалкогольные">Безалкогольные</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="glass">Бокал</label>
+                    <input type="text" id="glass" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Ингредиенты</label>
+                    <div class="ingredients-list" id="ingredientsList">
+                        <div class="ingredient-item">
+                            <input type="text" placeholder="Ингредиент" class="ingredient-name">
+                            <input type="text" placeholder="Количество" class="ingredient-amount">
+                            <button type="button" class="btn btn-danger remove-ingredient">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-secondary" id="addIngredient">
+                        <i class="fas fa-plus"></i> Добавить ингредиент
+                    </button>
+                </div>
+                
+                <div class="form-group">
+                    <label for="recipe">Рецепт приготовления</label>
+                    <textarea id="recipe" rows="4" required></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="notes">Примечания</label>
+                    <textarea id="notes" rows="2"></textarea>
+                </div>
+                
+                <button type="submit" class="btn btn-primary">Сохранить коктейль</button>
+                <button type="button" class="btn btn-secondary" id="cancelEdit">Отмена</button>
+            </form>
+        </div>
+        
+        <div class="cocktails-list">
+            <h2>Тех. карты коктейлей</h2>
+            
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Поиск коктейлей...">
+            </div>
+            
+            <div id="cocktailsContainer">
+                <div class="empty-state">
+                    <i class="fas fa-glass-martini-alt"></i>
+                    <h3>Коктейлей пока нет</h3>
+                    <p>Добавьте первый коктейль, используя форму слева</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <input type="file" id="importFile" style="display: none;" accept=".json">
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Элементы DOM
+            const cocktailForm = document.getElementById('cocktailForm');
+            const cocktailsContainer = document.getElementById('cocktailsContainer');
+            const searchInput = document.getElementById('searchInput');
+            const addIngredientBtn = document.getElementById('addIngredient');
+            const cancelEditBtn = document.getElementById('cancelEdit');
+            const exportBtn = document.getElementById('exportBtn');
+            const importBtn = document.getElementById('importBtn');
+            const importFile = document.getElementById('importFile');
+            const formTitle = document.getElementById('formTitle');
+            
+            // Загрузка коктейлей из localStorage
+            let cocktails = JSON.parse(localStorage.getItem('cocktails')) || [];
+            
+            // Отображение коктейлей
+            function renderCocktails(filter = '') {
+                const filteredCocktails = filter ? 
+                    cocktails.filter(c => 
+                        c.name.toLowerCase().includes(filter.toLowerCase()) || 
+                        c.category.toLowerCase().includes(filter.toLowerCase())
+                    ) : cocktails;
+                
+                if (filteredCocktails.length === 0) {
+                    cocktailsContainer.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-search"></i>
+                            <h3>Коктейли не найдены</h3>
+                            <p>Попробуйте изменить параметры поиска</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                cocktailsContainer.innerHTML = filteredCocktails.map(cocktail => `
+                    <div class="cocktail-card" data-id="${cocktail.id}">
+                        <div class="cocktail-header">
+                            <div class="cocktail-name">${cocktail.name}</div>
+                            <div class="cocktail-category">${cocktail.category}</div>
+                        </div>
+                        <div class="cocktail-glass">Подача: ${cocktail.glass}</div>
+                        
+                        <div class="cocktail-ingredients">
+                            ${cocktail.ingredients.map(ing => `
+                                <div class="ingredient">
+                                    <span>${ing.name}</span>
+                                    <span>${ing.amount}</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                        
+                        <div class="cocktail-recipe">
+                            <strong>Рецепт:</strong> ${cocktail.recipe}
+                        </div>
+                        
+                        ${cocktail.notes ? `<div><strong>Примечания:</strong> ${cocktail.notes}</div>` : ''}
+                        
+                        <div class="cocktail-actions">
+                            <button class="btn btn-primary edit-cocktail" data-id="${cocktail.id}">
+                                <i class="fas fa-edit"></i> Редактировать
+                            </button>
+                            <button class="btn btn-danger delete-cocktail" data-id="${cocktail.id}">
+                                <i class="fas fa-trash"></i> Удалить
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+                
+                // Добавляем обработчики событий для кнопок
+                document.querySelectorAll('.edit-cocktail').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const id = e.target.closest('.edit-cocktail').dataset.id;
+                        editCocktail(id);
+                    });
+                });
+                
+                document.querySelectorAll('.delete-cocktail').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const id = e.target.closest('.delete-cocktail').dataset.id;
+                        deleteCocktail(id);
+                    });
+                });
+            }
+            
+            // Добавление ингредиента
+            addIngredientBtn.addEventListener('click', () => {
+                const ingredientsList = document.getElementById('ingredientsList');
+                const newIngredient = document.createElement('div');
+                newIngredient.className = 'ingredient-item';
+                newIngredient.innerHTML = `
+                    <input type="text" placeholder="Ингредиент" class="ingredient-name">
+                    <input type="text" placeholder="Количество" class="ingredient-amount">
+                    <button type="button" class="btn btn-danger remove-ingredient">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                `;
+                ingredientsList.appendChild(newIngredient);
+                
+                // Обработчик для удаления ингредиента
+                newIngredient.querySelector('.remove-ingredient').addEventListener('click', () => {
+                    ingredientsList.removeChild(newIngredient);
+                });
+            });
+            
+            // Обработчики для удаления ингредиентов (для уже существующих)
+            document.querySelectorAll('.remove-ingredient').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.target.closest('.ingredient-item').remove();
+                });
+            });
+            
+            // Отправка формы
+            cocktailForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                
+                const id = document.getElementById('cocktailId').value;
+                const name = document.getElementById('name').value;
+                const category = document.getElementById('category').value;
+                const glass = document.getElementById('glass').value;
+                const recipe = document.getElementById('recipe').value;
+                const notes = document.getElementById('notes').value;
+                
+                // Сбор ингредиентов
+                const ingredients = [];
+                document.querySelectorAll('.ingredient-item').forEach(item => {
+                    const name = item.querySelector('.ingredient-name').value;
+                    const amount = item.querySelector('.ingredient-amount').value;
+                    if (name && amount) {
+                        ingredients.push({ name, amount });
+                    }
+                });
+                
+                if (ingredients.length === 0) {
+                    alert('Добавьте хотя бы один ингредиент');
+                    return;
+                }
+                
+                const cocktailData = {
+                    id: id || Date.now().toString(),
+                    name,
+                    category,
+                    glass,
+                    ingredients,
+                    recipe,
+                    notes
+                };
+                
+                if (id) {
+                    // Редактирование существующего коктейля
+                    const index = cocktails.findIndex(c => c.id === id);
+                    if (index !== -1) {
+                        cocktails[index] = cocktailData;
+                    }
+                } else {
+                    // Добавление нового коктейля
+                    cocktails.push(cocktailData);
+                }
+                
+                // Сохранение в localStorage
+                localStorage.setItem('cocktails', JSON.stringify(cocktails));
+                
+                // Очистка формы
+                resetForm();
+                
+                // Обновление отображения
+                renderCocktails();
+            });
+            
+            // Редактирование коктейля
+            function editCocktail(id) {
+                const cocktail = cocktails.find(c => c.id === id);
+                if (!cocktail) return;
+                
+                formTitle.textContent = 'Редактировать коктейль';
+                document.getElementById('cocktailId').value = cocktail.id;
+                document.getElementById('name').value = cocktail.name;
+                document.getElementById('category').value = cocktail.category;
+                document.getElementById('glass').value = cocktail.glass;
+                document.getElementById('recipe').value = cocktail.recipe;
+                document.getElementById('notes').value = cocktail.notes || '';
+                
+                // Очистка списка ингредиентов
+                const ingredientsList = document.getElementById('ingredientsList');
+                ingredientsList.innerHTML = '';
+                
+                // Добавление ингредиентов
+                cocktail.ingredients.forEach(ing => {
+                    const ingredientItem = document.createElement('div');
+                    ingredientItem.className = 'ingredient-item';
+                    ingredientItem.innerHTML = `
+                        <input type="text" placeholder="Ингредиент" class="ingredient-name" value="${ing.name}">
+                        <input type="text" placeholder="Количество" class="ingredient-amount" value="${ing.amount}">
+                        <button type="button" class="btn btn-danger remove-ingredient">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    `;
+                    ingredientsList.appendChild(ingredientItem);
+                    
+                    // Обработчик для удаления ингредиента
+                    ingredientItem.querySelector('.remove-ingredient').addEventListener('click', () => {
+                        ingredientsList.removeChild(ingredientItem);
+                    });
+                });
+                
+                // Прокрутка к форме
+                document.querySelector('.cocktail-form').scrollIntoView({ behavior: 'smooth' });
+            }
+            
+            // Удаление коктейля
+            function deleteCocktail(id) {
+                if (confirm('Вы уверены, что хотите удалить этот коктейль?')) {
+                    cocktails = cocktails.filter(c => c.id !== id);
+                    localStorage.setItem('cocktails', JSON.stringify(cocktails));
+                    renderCocktails();
+                }
+            }
+            
+            // Отмена редактирования
+            cancelEditBtn.addEventListener('click', resetForm);
+            
+            // Сброс формы
+            function resetForm() {
+                cocktailForm.reset();
+                document.getElementById('cocktailId').value = '';
+                document.getElementById('ingredientsList').innerHTML = `
+                    <div class="ingredient-item">
+                        <input type="text" placeholder="Ингредиент" class="ingredient-name">
+                        <input type="text" placeholder="Количество" class="ingredient-amount">
+                        <button type="button" class="btn btn-danger remove-ingredient">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                `;
+                formTitle.textContent = 'Добавить новый коктейль';
+                
+                // Обработчик для удаления ингредиента
+                document.querySelector('.remove-ingredient').addEventListener('click', (e) => {
+                    e.target.closest('.ingredient-item').remove();
+                });
+            }
+            
+            // Поиск коктейлей
+            searchInput.addEventListener('input', (e) => {
+                renderCocktails(e.target.value);
+            });
+            
+            // Экспорт данных
+            exportBtn.addEventListener('click', () => {
+                const dataStr = JSON.stringify(cocktails, null, 2);
+                const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+                
+                const exportFileDefaultName = 'cocktails.json';
+                
+                const linkElement = document.createElement('a');
+                linkElement.setAttribute('href', dataUri);
+                linkElement.setAttribute('download', exportFileDefaultName);
+                linkElement.click();
+            });
+            
+            // Импорт данных
+            importBtn.addEventListener('click', () => {
+                importFile.click();
+            });
+            
+            importFile.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+                
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    try {
+                        const importedCocktails = JSON.parse(e.target.result);
+                        if (Array.isArray(importedCocktails)) {
+                            if (confirm(`Импортировать ${importedCocktails.length} коктейлей? Существующие данные будут перезаписаны.`)) {
+                                cocktails = importedCocktails;
+                                localStorage.setItem('cocktails', JSON.stringify(cocktails));
+                                renderCocktails();
+                                alert('Данные успешно импортированы!');
+                            }
+                        } else {
+                            alert('Ошибка: файл не содержит valid данных о коктейлях');
+                        }
+                    } catch (error) {
+                        alert('Ошибка при чтении файла: ' + error.message);
+                    }
+                };
+                reader.readAsText(file);
+            });
+            
+            // Инициализация
+            renderCocktails();
+        });
+    </script>
+</body>
+</html>
